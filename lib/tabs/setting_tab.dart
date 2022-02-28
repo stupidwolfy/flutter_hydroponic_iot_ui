@@ -9,33 +9,87 @@ class SettingTab extends StatefulWidget {
 }
 
 class _SettingTabState extends State<SettingTab> {
-  List<Widget> columnItem = [
-    CardItem(name: "test"),
-    CardItem(name: "Item"),
-    CardItem(name: "test"),
-    CardItem(name: "Item"),
-  ];
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.green,
-      child: Column(
-        children: columnItem,
+      child: SettingsList(
+        sections: [
+          SettingsSection(
+            title: const Text('Common'),
+            tiles: <SettingsTile>[
+              SettingsTile.switchTile(
+                onToggle: (value) {},
+                initialValue: false,
+                leading: const Icon(Icons.update),
+                title: const Text('Auto Update'),
+                description: const Text('update every 5 minute'),
+              ),
+              SettingsTile(
+                leading: const Icon(Icons.network_wifi),
+                title: const Text('Device Address'),
+                value: const Text('http://192.168.66.66:5000'),
+                onPressed: (BuildContext context) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Stack(
+                            clipBehavior: Clip.none,
+                            children: <Widget>[
+                              Positioned(
+                                right: -40.0,
+                                top: -40.0,
+                                child: InkResponse(
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const CircleAvatar(
+                                    child: Icon(Icons.close),
+                                    backgroundColor: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              Form(
+                                key: _formKey,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextFormField(),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextFormField(),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        child: const Text("Submitß"),
+                                        onPressed: () {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            _formKey.currentState!.save();
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                },
+              ),
+            ],
+          ),
+        ],
       ),
-    );
-  }
-}
-
-class CardItem extends StatelessWidget {
-  const CardItem({Key? key, required this.name}) : super(key: key);
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Column(children: [Text(name)]),
-      color: Colors.white,
     );
   }
 }
