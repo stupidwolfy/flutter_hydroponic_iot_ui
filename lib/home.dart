@@ -8,9 +8,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<String> _appbarName = ["Home", "Setting"];
+  final List<String> _appbarName = ["Dashboard", "Control", "Setting"];
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
+
+  final Container _homeContainer = Container(color: Colors.blue);
+  final Container _controlContainer = Container(color: Colors.red);
+  final Container _settingContainer = Container(color: Colors.green);
 
   void _onBottonNavTapped(int index) {
     setState(() {
@@ -29,16 +33,21 @@ class _HomeScreenState extends State<HomeScreen> {
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            Container(color: Colors.red),
-            Container(color: Colors.green),
+            _homeContainer,
+            _controlContainer,
+            _settingContainer,
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.analytics),
+            label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.ballot),
+            label: 'Control',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
