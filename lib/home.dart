@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hydroponic_iot_ui/tabs/control_tab.dart';
+import 'package:flutter_hydroponic_iot_ui/tabs/dashboard_tab.dart';
+import 'package:flutter_hydroponic_iot_ui/tabs/setting_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,10 +14,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> _appbarName = ["Dashboard", "Control", "Setting"];
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
-
-  final Container _homeContainer = Container(color: Colors.blue);
-  final Container _controlContainer = Container(color: Colors.red);
-  final Container _settingContainer = Container(color: Colors.green);
 
   void _onBottonNavTapped(int index) {
     setState(() {
@@ -32,10 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
-          children: [
-            _homeContainer,
-            _controlContainer,
-            _settingContainer,
+          children: const [
+            DashBoardTab(),
+            ControlTab(),
+            SettingTab(),
           ],
         ),
       ),
