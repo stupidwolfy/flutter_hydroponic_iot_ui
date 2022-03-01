@@ -11,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<String> _appbarName = ["Dashboard", "Control", "Setting"];
+  final List<String> _appbarName = ["Dashboard", /*"Control",*/ "Setting"];
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
 
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           physics: const NeverScrollableScrollPhysics(),
           children: const [
             DashBoardTab(),
-            ControlTab(),
+            //ControlTab(),
             SettingTab(),
           ],
         ),
@@ -43,10 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.analytics),
             label: 'Dashboard',
           ),
-          BottomNavigationBarItem(
+          /*BottomNavigationBarItem(
             icon: Icon(Icons.ballot),
             label: 'Control',
-          ),
+          ),*/
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Setting',
