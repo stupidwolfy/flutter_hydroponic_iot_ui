@@ -18,7 +18,7 @@ class _DashBoardTabState extends State<DashBoardTab> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue,
+      color: Colors.white,
       child: GridView(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -56,14 +56,16 @@ class _CardItemState extends State<CardItem> {
         future: futureDevice,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Column(children: [
-              Text(widget.deviceName),
-              SizedBox(height: 10),
-              Text('Temp: ' + snapshot.data!.temperature.toString()),
-              SizedBox(height: 5),
-              Text('Humid: ' + snapshot.data!.humid.toString()),
-              SizedBox(height: 5),
-            ],);
+            return Column(
+              children: [
+                Text(widget.deviceName),
+                const SizedBox(height: 10),
+                Text('Temp: ' + snapshot.data!.temperature.toString()),
+                const SizedBox(height: 5),
+                Text('Humid: ' + snapshot.data!.humid.toString()),
+                const SizedBox(height: 5),
+              ],
+            );
           } else if (snapshot.hasError) {
             return Column(children: [
               Text(widget.deviceName),
@@ -73,10 +75,14 @@ class _CardItemState extends State<CardItem> {
           }
 
           // By default, show a loading spinner.
-          return const CircularProgressIndicator();
+          return Container(
+              padding: const EdgeInsets.all(30),
+              child: const CircularProgressIndicator.adaptive(
+                backgroundColor: Colors.white,
+              ));
         },
       ),
-      color: Colors.white,
+      color: Colors.green,
     );
   }
 }
