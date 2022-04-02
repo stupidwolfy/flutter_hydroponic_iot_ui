@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:collection/collection.dart';
 
 class DashBoardTab extends StatefulWidget {
   const DashBoardTab({Key? key}) : super(key: key);
@@ -31,24 +32,60 @@ class _DashBoardTabState extends State<DashBoardTab> {
 
   late List<Widget> deviceCardList = [
     DeviceCard(
-      icon: Icons.home,
-      name: "Air sensor",
+      icon: Icons.air,
+      name: "Air",
       path: "sensor/temp",
       address: deviceAddress,
       port: devicePort,
       autoUpdate: autoUpdate,
       autoUpdateTime: autoUpdateTime,
       dataList: const ["temp", "humid"],
+      dataSuffixList: const ["°C", "%"],
     ),
     DeviceCard(
-      icon: Icons.ac_unit,
-      name: "PH sensor",
+      icon: Icons.water,
+      name: "Water",
+      path: "sensor/water_temp",
+      address: deviceAddress,
+      port: devicePort,
+      autoUpdate: autoUpdate,
+      autoUpdateTime: autoUpdateTime,
+      dataList: const ["temp"],
+      dataSuffixList: const ["°C"],
+    ),
+    DeviceCard(
+      icon: Icons.opacity,
+      name: "PH",
       path: "sensor/ph",
       address: deviceAddress,
       port: devicePort,
       autoUpdate: autoUpdate,
       autoUpdateTime: autoUpdateTime,
       dataList: const ["ph"],
+      dataSuffixList: const [""],
+    ),
+    DeviceCard(
+      icon: Icons.local_drink,
+      name: "EC",
+      path: "sensor/ec",
+      address: deviceAddress,
+      port: devicePort,
+      autoUpdate: autoUpdate,
+      autoUpdateTime: autoUpdateTime,
+      dataList: const ["ec"],
+      dataSuffixList: const ["dS/m"],
+    ),
+    DeviceCard(
+      icon: Icons.ac_unit,
+      name: "Camera",
+      path: "",
+      address: deviceAddress,
+      port: devicePort,
+      autoUpdate: autoUpdate,
+      autoUpdateTime: autoUpdateTime,
+      dataList: const [],
+      dataSuffixList: const [],
+      image: Image.network("http://$deviceAddress:$devicePort/cam"),
     ),
   ];
 
@@ -90,6 +127,8 @@ class DeviceCard extends StatefulWidget {
   final int autoUpdateTime;
 
   final List<String> dataList;
+  final List<String> dataSuffixList;
+  final Image? image;
 
   final String lastValue = "loading";
 
@@ -103,6 +142,8 @@ class DeviceCard extends StatefulWidget {
     required this.autoUpdateTime,
     required this.dataList,
     required this.icon,
+    required this.dataSuffixList,
+    this.image,
   }) : super(key: key);
 
   @override
@@ -124,29 +165,42 @@ class _DeviceCardState extends State<DeviceCard> {
       child: FutureBuilder(
         future: device,
         builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              children: [
-                const SizedBox(height: 10),
-                Icon(widget.icon, size: 50),
-                const SizedBox(height: 10),
+          if (widget.image == null) {
+            if (snapshot.hasData) {
+              return Column(
+                children: [
+                  const SizedBox(height: 10),
+                  Icon(widget.icon, size: 50),
+                  const SizedBox(height: 10),
+                  Text(widget.name,
+                      style: Theme.of(context).textTheme.headline6),
+                  const SizedBox(height: 10),
+                  ...widget.dataList
+                      .mapIndexed((index, i) => Column(
+                            children: [
+                              Text(
+                                  '$i: ${snapshot.data![i].toString()}${widget.dataSuffixList[index]}',
+                                  style:
+                                      Theme.of(context).textTheme.labelLarge),
+                              const SizedBox(height: 5),
+                            ],
+                          ))
+                      .toList()
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return Column(children: [
                 Text(widget.name),
-                const SizedBox(height: 10),
-                ...widget.dataList
-                    .map((i) => Column(
-                          children: [
-                            Text('$i: ' + snapshot.data![i].toString()),
-                            const SizedBox(height: 5),
-                          ],
-                        ))
-                    .toList()
-              ],
-            );
-          } else if (snapshot.hasError) {
+                const Text("error"),
+                Text('${snapshot.error}')
+              ]);
+            }
+          } else {
             return Column(children: [
-              Text(widget.name),
-              const Text("error"),
-              Text('${snapshot.error}')
+              const SizedBox(height: 30),
+              Center(child: widget.image),
+              const SizedBox(height: 10),
+              Text(widget.name, style: Theme.of(context).textTheme.headline6),
             ]);
           }
 
