@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashBoardTab extends StatefulWidget {
   const DashBoardTab({Key? key}) : super(key: key);
@@ -41,12 +42,34 @@ class CardItem extends StatefulWidget {
 }
 
 class _CardItemState extends State<CardItem> {
+  String? deviceAddress;
+  int? devicePort;
+  bool? autoUpdate;
+  int? autoUpdateTime;
+
   late Future<Device> futureDevice;
+
+  _fetchAllDevice() async {
+    deviceAddress ?? await _loadSetting();
+    futureDevice = fetchDevice(deviceAddress, devicePort, "sensor/temp");
+  }
+
+  _loadSetting() async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+    // Try reading data from the 'SharedPreferences'. If got null, return desired default value.
+    setState(() {
+      deviceAddress = prefs.getString('device-address') ?? "192.168.1.2";
+      devicePort = prefs.getInt('device-port') ?? 5000;
+      autoUpdate = prefs.getBool('auto-update') ?? false;
+      autoUpdateTime = prefs.getInt('auto-update-time') ?? 5;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    futureDevice = fetchDevice();
+    _fetchAllDevice();
   }
 
   @override
@@ -88,9 +111,8 @@ class _CardItemState extends State<CardItem> {
 }
 
 //Network handle
-Future<Device> fetchDevice() async {
-  final response =
-      await http.get(Uri.parse('http://192.168.43.96:5000/sensor/temp'));
+Future<Device> fetchDevice(address, port, path) async {
+  final response = await http.get(Uri.parse('http://$address:$port/$path'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
