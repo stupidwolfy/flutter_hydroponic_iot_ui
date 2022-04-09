@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
+import 'login.dart';
+import 'home_cloud.dart';
+import 'home_local.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +22,12 @@ class MyApp extends StatelessWidget {
             //headline2: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
       ),
-      home: const HomeScreen(),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/local': (context) => const LocalHomeScreen(),
+        '/cloud': (context) => const CloudHomeScreen(),
+      },
     );
   }
 }

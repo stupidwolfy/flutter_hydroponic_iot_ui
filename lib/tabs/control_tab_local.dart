@@ -9,10 +9,10 @@ class ControlTab extends StatefulWidget {
 
 class _ControlTabState extends State<ControlTab> {
   List<Widget> gridItem = [
-    CardItem(name: "test"),
-    CardItem(name: "Item"),
-    CardItem(name: "test"),
-    CardItem(name: "Item"),
+    const CardItem(name: "test"),
+    const CardItem(name: "Item"),
+    const CardItem(name: "test"),
+    const CardItem(name: "Item"),
   ];
 
   @override

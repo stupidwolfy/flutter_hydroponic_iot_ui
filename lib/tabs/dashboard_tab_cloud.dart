@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -30,64 +32,7 @@ class _DashBoardTabState extends State<DashBoardTab> {
     });
   }
 
-  late List<Widget> deviceCardList = [
-    DeviceCard(
-      icon: Icons.air,
-      name: "Air",
-      path: "sensor/temp",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const ["temp", "humid"],
-      dataSuffixList: const ["°C", "%"],
-    ),
-    DeviceCard(
-      icon: Icons.water,
-      name: "Water",
-      path: "sensor/water_temp",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const ["temp"],
-      dataSuffixList: const ["°C"],
-    ),
-    DeviceCard(
-      icon: Icons.opacity,
-      name: "PH",
-      path: "sensor/ph",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const ["ph"],
-      dataSuffixList: const [""],
-    ),
-    DeviceCard(
-      icon: Icons.local_drink,
-      name: "EC",
-      path: "sensor/ec",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const ["ec"],
-      dataSuffixList: const ["dS/m"],
-    ),
-    DeviceCard(
-      icon: Icons.ac_unit,
-      name: "Camera",
-      path: "",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const [],
-      dataSuffixList: const [],
-      image: Image.network("http://$deviceAddress:$devicePort/cam"),
-    ),
-  ];
+  late List<Widget> deviceCardList = [];
 
   @override
   void initState() {
@@ -175,17 +120,21 @@ class _DeviceCardState extends State<DeviceCard> {
                   Text(widget.name,
                       style: Theme.of(context).textTheme.headline6),
                   const SizedBox(height: 10),
-                  ...widget.dataList
-                      .mapIndexed((index, i) => Column(
-                            children: [
-                              Text(
-                                  '$i: ${snapshot.data![i].toString()}${widget.dataSuffixList[index]}',
-                                  style:
-                                      Theme.of(context).textTheme.labelLarge),
-                              const SizedBox(height: 5),
-                            ],
-                          ))
-                      .toList()
+                  if (snapshot.data!['status'] == 'ok')
+                    ...widget.dataList
+                        .mapIndexed((index, i) => Column(
+                              children: [
+                                Text(
+                                    '$i: ${snapshot.data![i].toString()}${widget.dataSuffixList[index]}',
+                                    style:
+                                        Theme.of(context).textTheme.labelLarge),
+                                const SizedBox(height: 5),
+                              ],
+                            ))
+                        .toList()
+                  else
+                    Text(snapshot.data!['detail'],
+                        style: Theme.of(context).textTheme.headline6)
                 ],
               );
             } else if (snapshot.hasError) {
@@ -219,17 +168,27 @@ class _DeviceCardState extends State<DeviceCard> {
 
 //Network handle
 Future<Map<String, dynamic>> fetchDevice(address, port, path) async {
-  final response = await http.get(Uri.parse('http://$address:$port/$path'));
+  late http.Response? response;
+  try {
+    response = await http.get(Uri.parse('http://$address:$port/$path'));
+  } on SocketException catch (e) {
+    response = null;
+  }
 
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    //return Device.fromJson(jsonDecode(response.body));
-    Map<String, dynamic> data = jsonDecode(response.body);
-    return data;
+  if (response == null) {
+    return {"status": "Error", "detail": "Connection failed."};
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load device');
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //return Device.fromJson(jsonDecode(response.body));
+      Map<String, dynamic> data = jsonDecode(response.body);
+      data["status"] = "ok";
+      return data;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load device');
+    }
   }
 }

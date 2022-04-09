@@ -211,6 +211,12 @@ class _SettingTabState extends State<SettingTab> {
               ),
             ],
           ),
+          SettingsSection(
+              title: ElevatedButton(
+                  onPressed: () => Navigator.popAndPushNamed(context, '/login'),
+                  style: ElevatedButton.styleFrom(primary: Colors.blueAccent),
+                  child: const Text("Cloud Mode")),
+              tiles: const []),
         ],
       ),
     );

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hydroponic_iot_ui/tabs/control_tab.dart';
-import 'package:flutter_hydroponic_iot_ui/tabs/dashboard_tab.dart';
-import 'package:flutter_hydroponic_iot_ui/tabs/setting_tab.dart';
+//import 'package:flutter_hydroponic_iot_ui/tabs/control_tab.dart';
+import 'package:flutter_hydroponic_iot_ui/tabs/dashboard_tab_local.dart';
+import 'package:flutter_hydroponic_iot_ui/tabs/setting_tab_local.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class LocalHomeScreen extends StatefulWidget {
+  const LocalHomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _LocalHomeScreenState createState() => _LocalHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final List<String> _appbarName = ["Dashboard", /*"Control",*/ "Setting"];
+class _LocalHomeScreenState extends State<LocalHomeScreen> {
+  final String _appbarName = "Local";
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
 
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_appbarName[_selectedIndex])),
+      appBar: AppBar(title: Text(_appbarName)),
       body: Center(
         child: PageView(
           controller: _pageController,
