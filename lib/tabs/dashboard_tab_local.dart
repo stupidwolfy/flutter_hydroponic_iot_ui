@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
+import 'package:responsive_grid/responsive_grid.dart';
 
 class DashBoardTab extends StatefulWidget {
   const DashBoardTab({Key? key}) : super(key: key);
@@ -32,72 +33,97 @@ class _DashBoardTabState extends State<DashBoardTab> {
     });
   }
 
-  late List<Widget> deviceCardList = [
-    DeviceCard(
-      icon: Icons.air,
-      name: "Air",
-      path: "sensor/temp",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const ["temp", "humid"],
-      dataSuffixList: const ["°C", "%"],
-    ),
-    DeviceCard(
-      icon: Icons.water,
-      name: "Water",
-      path: "sensor/water_temp",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const ["temp"],
-      dataSuffixList: const ["°C"],
-    ),
-    DeviceCard(
-      icon: Icons.opacity,
-      name: "PH",
-      path: "sensor/ph",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const ["ph"],
-      dataSuffixList: const [""],
-    ),
-    DeviceCard(
-      icon: Icons.local_drink,
-      name: "EC",
-      path: "sensor/ec",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const ["ec"],
-      dataSuffixList: const ["dS/m"],
-    ),
-    DeviceCard(
-      icon: Icons.ac_unit,
-      name: "Camera",
-      path: "",
-      address: deviceAddress,
-      port: devicePort,
-      autoUpdate: autoUpdate,
-      autoUpdateTime: autoUpdateTime,
-      dataList: const [],
-      dataSuffixList: const [],
-      image: Image.network(
-        "http://$deviceAddress:$devicePort/cam",
-        errorBuilder:
-            (BuildContext context, Object exception, StackTrace? stackTrace) {
-          return const Icon(
-            Icons.image_not_supported_outlined,
-            size: 50,
-          );
-        },
-      ),
-    ),
+  late List<ResponsiveGridCol> deviceCardList = [
+    ResponsiveGridCol(
+        xl: 2,
+        lg: 3,
+        md: 4,
+        sm: 6,
+        child: DeviceCard(
+          icon: Icons.air,
+          name: "Air",
+          path: "sensor/temp",
+          address: deviceAddress,
+          port: devicePort,
+          autoUpdate: autoUpdate,
+          autoUpdateTime: autoUpdateTime,
+          dataList: const ["temp", "humid"],
+          dataSuffixList: const ["°C", "%"],
+        )),
+    ResponsiveGridCol(
+        xl: 3,
+        lg: 4,
+        md: 6,
+        xs: 12,
+        child: DeviceCard(
+          icon: Icons.water,
+          name: "Water",
+          path: "sensor/water_temp",
+          address: deviceAddress,
+          port: devicePort,
+          autoUpdate: autoUpdate,
+          autoUpdateTime: autoUpdateTime,
+          dataList: const ["temp"],
+          dataSuffixList: const ["°C"],
+        )),
+    ResponsiveGridCol(
+        xl: 3,
+        lg: 4,
+        md: 6,
+        xs: 12,
+        child: DeviceCard(
+          icon: Icons.opacity,
+          name: "PH",
+          path: "sensor/ph",
+          address: deviceAddress,
+          port: devicePort,
+          autoUpdate: autoUpdate,
+          autoUpdateTime: autoUpdateTime,
+          dataList: const ["ph"],
+          dataSuffixList: const [""],
+        )),
+    ResponsiveGridCol(
+        xl: 3,
+        lg: 4,
+        md: 6,
+        xs: 12,
+        child: DeviceCard(
+          icon: Icons.local_drink,
+          name: "EC",
+          path: "sensor/ec",
+          address: deviceAddress,
+          port: devicePort,
+          autoUpdate: autoUpdate,
+          autoUpdateTime: autoUpdateTime,
+          dataList: const ["ec"],
+          dataSuffixList: const ["dS/m"],
+        )),
+    ResponsiveGridCol(
+        xl: 12,
+        lg: 12,
+        md: 12,
+        xs: 12,
+        child: DeviceCard(
+          icon: Icons.ac_unit,
+          name: "Camera",
+          path: "",
+          address: deviceAddress,
+          port: devicePort,
+          autoUpdate: autoUpdate,
+          autoUpdateTime: autoUpdateTime,
+          dataList: const [],
+          dataSuffixList: const [],
+          image: Image.network(
+            "http://$deviceAddress:$devicePort/cam",
+            errorBuilder: (BuildContext context, Object exception,
+                StackTrace? stackTrace) {
+              return const Icon(
+                Icons.image_not_supported_outlined,
+                size: 50,
+              );
+            },
+          ),
+        )),
   ];
 
   @override
@@ -112,13 +138,13 @@ class _DashBoardTabState extends State<DashBoardTab> {
       if (deviceAddress.isEmpty) {
         return const CircularProgressIndicator.adaptive();
       } else {
-        return Container(
-          color: Colors.white,
-          child: GridView(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            padding: const EdgeInsets.all(15),
+        return SingleChildScrollView(
+          //color: Colors.white,
+          child: ResponsiveGridRow(
+            // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            // crossAxisCount: 2,
+            // ),
+            //padding: const EdgeInsets.all(15),
             children: deviceCardList,
           ),
         );
