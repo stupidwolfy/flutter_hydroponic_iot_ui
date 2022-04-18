@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
-import 'home_cloud.dart';
-import 'home_local.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'login.dart';
+import 'home.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setInt("initScreen", 12);
+  final bool usingLocal = (prefs.getBool("usingLocal") ?? false);
+  runApp(MyApp(usingLocal: usingLocal));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final bool usingLocal;
+
+  const MyApp({Key? key, required this.usingLocal}) : super(key: key);
+
+  //Switch default start page
+  String mainpageRedirect() {
+    if (FirebaseAuth.instance.currentUser != null || usingLocal) return '/home';
+    return '/login';
+  }
 
   // This widget is the root of your application.
   @override
@@ -22,11 +39,10 @@ class MyApp extends StatelessWidget {
             //headline2: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
       ),
-      initialRoute: '/login',
+      initialRoute: mainpageRedirect(),
       routes: {
         '/login': (context) => const LoginScreen(),
-        '/local': (context) => const LocalHomeScreen(),
-        '/cloud': (context) => const CloudHomeScreen(),
+        '/home': (context) => const HomeScreen(),
       },
     );
   }

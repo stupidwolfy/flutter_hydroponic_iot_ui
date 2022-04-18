@@ -1,4 +1,4 @@
-package com.example.flutter_hydroponic_iot_ui
+package com.arnon.hydroponic
 
 import io.flutter.embedding.android.FlutterActivity
 

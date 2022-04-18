@@ -59,6 +59,7 @@ flutter_*.png
 linked_*.ds
 unlinked.ds
 unlinked_spec.ds
+android/app/google-services.json
 
 # Web related
 lib/generated_plugin_registrant.dart

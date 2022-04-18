@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flutter_hydroponic_iot_ui">
+    package="com.arnon.hydroponic">
    <application
         android:label="flutter_hydroponic_iot_ui"
         android:name="${applicationName}"

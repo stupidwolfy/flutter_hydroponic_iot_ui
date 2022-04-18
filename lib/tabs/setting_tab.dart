@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingTab extends StatefulWidget {
   const SettingTab({Key? key}) : super(key: key);
@@ -17,8 +18,19 @@ class _SettingTabState extends State<SettingTab> {
   int? devicePort;
   bool? autoUpdate;
   int? autoUpdateTime;
+  bool usingLocal = false;
 
   final deviceAddressController = TextEditingController();
+
+  void _toLoginPage() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (FirebaseAuth.instance.currentUser != null) {
+      await FirebaseAuth.instance.signOut();
+    }
+    await prefs.setBool("usingLocal", false);
+
+    Navigator.popAndPushNamed(context, '/login');
+  }
 
   @override
   void initState() {
@@ -42,6 +54,7 @@ class _SettingTabState extends State<SettingTab> {
       devicePort = prefs.getInt('device-port') ?? 5000;
       autoUpdate = prefs.getBool('auto-update') ?? false;
       autoUpdateTime = prefs.getInt('auto-update-time') ?? 5;
+      usingLocal = prefs.getBool("usingLocal") ?? false;
 
       deviceAddressController.text = deviceAddress ?? "";
     });
@@ -82,6 +95,10 @@ class _SettingTabState extends State<SettingTab> {
                 title: const Text('Auto Update'),
                 description: Text('update every $autoUpdateTime minute'),
               ),
+            ],
+          ),
+          if (usingLocal)
+            SettingsSection(title: const Text('Local'), tiles: <SettingsTile>[
               SettingsTile(
                 leading: const Icon(Icons.network_wifi),
                 title: const Text('Device Address'),
@@ -209,13 +226,12 @@ class _SettingTabState extends State<SettingTab> {
                       });
                 },
               ),
-            ],
-          ),
+            ]),
           SettingsSection(
               title: ElevatedButton(
-                  onPressed: () => Navigator.popAndPushNamed(context, '/login'),
+                  onPressed: () => _toLoginPage(),
                   style: ElevatedButton.styleFrom(primary: Colors.blueAccent),
-                  child: const Text("Cloud Mode")),
+                  child: Text(usingLocal ? "Login" : "Logout")),
               tiles: const []),
         ],
       ),

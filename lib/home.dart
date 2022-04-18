@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter_hydroponic_iot_ui/tabs/control_tab.dart';
-import 'package:flutter_hydroponic_iot_ui/tabs/dashboard_tab_local.dart';
-import 'package:flutter_hydroponic_iot_ui/tabs/setting_tab_local.dart';
+import 'package:flutter_hydroponic_iot_ui/tabs/dashboard_tab.dart';
+import 'package:flutter_hydroponic_iot_ui/tabs/setting_tab.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalHomeScreen extends StatefulWidget {
-  const LocalHomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _LocalHomeScreenState createState() => _LocalHomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _LocalHomeScreenState extends State<LocalHomeScreen> {
-  final String _appbarName = "Local";
+class _HomeScreenState extends State<HomeScreen> {
+  final List<String> _appbarName = ["Local", "Cloud"];
+  late int _appbarNameTarget = 0;
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
 
@@ -22,10 +24,23 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
     _pageController.jumpToPage(index);
   }
 
+  void _loadSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _appbarNameTarget = (prefs.getBool('usingLocal') ?? false) ? 0 : 1;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSetting();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_appbarName)),
+      appBar: AppBar(title: Text(_appbarName[_appbarNameTarget])),
       body: Center(
         child: PageView(
           controller: _pageController,
