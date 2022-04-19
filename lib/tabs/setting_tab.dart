@@ -95,6 +95,13 @@ class _SettingTabState extends State<SettingTab> {
                 title: const Text('Auto Update'),
                 description: Text('update every $autoUpdateTime minute'),
               ),
+              SettingsTile(
+                title: Text(usingLocal ? "Login" : "Logout"),
+                value: ElevatedButton(
+                  child: Text(usingLocal ? "Login" : "Logout"),
+                  onPressed: () => _toLoginPage(),
+                ),
+              ),
             ],
           ),
           if (usingLocal)
@@ -225,13 +232,6 @@ class _SettingTabState extends State<SettingTab> {
                         );
                       });
                 },
-              ),
-              SettingsTile(
-                title: Text(usingLocal ? "Login" : "Logout"),
-                value: ElevatedButton(
-                  child: Text(usingLocal ? "Login" : "Logout"),
-                  onPressed: () => _toLoginPage(),
-                ),
               ),
             ]),
         ],
