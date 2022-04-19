@@ -226,13 +226,14 @@ class _SettingTabState extends State<SettingTab> {
                       });
                 },
               ),
-            ]),
-          SettingsSection(
-              title: ElevatedButton(
+              SettingsTile(
+                title: Text(usingLocal ? "Login" : "Logout"),
+                value: ElevatedButton(
+                  child: Text(usingLocal ? "Login" : "Logout"),
                   onPressed: () => _toLoginPage(),
-                  style: ElevatedButton.styleFrom(primary: Colors.blueAccent),
-                  child: Text(usingLocal ? "Login" : "Logout")),
-              tiles: const []),
+                ),
+              ),
+            ]),
         ],
       ),
     );
