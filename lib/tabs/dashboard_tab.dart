@@ -42,7 +42,7 @@ class _DashBoardTabState extends State<DashBoardTab> {
         xs: 6,
         child: DeviceCard(
           icon: Icons.air,
-          name: "Air Temp",
+          name: "Temperature",
           path: "sensor/temp",
           address: deviceAddress,
           port: devicePort,
@@ -59,7 +59,7 @@ class _DashBoardTabState extends State<DashBoardTab> {
         xs: 6,
         child: DeviceCard(
           icon: Icons.air,
-          name: "Air Humid",
+          name: "Humidity",
           path: "sensor/temp",
           address: deviceAddress,
           port: devicePort,
@@ -68,23 +68,6 @@ class _DashBoardTabState extends State<DashBoardTab> {
           dataList: const ["temp", "humid"],
           dataSuffixList: const ["°C", "%"],
           firebaseDBDataName: "humid",
-          firebaseDBPath: 'device',
-        )),
-    ResponsiveGridCol(
-        md: 3,
-        sm: 3,
-        xs: 6,
-        child: DeviceCard(
-          icon: Icons.water,
-          name: "Water",
-          path: "sensor/water_temp",
-          address: deviceAddress,
-          port: devicePort,
-          autoUpdate: autoUpdate,
-          autoUpdateTime: autoUpdateTime,
-          dataList: const ["temp"],
-          dataSuffixList: const ["°C"],
-          firebaseDBDataName: "water-temp",
           firebaseDBPath: 'device',
         )),
     ResponsiveGridCol(
@@ -127,7 +110,7 @@ class _DashBoardTabState extends State<DashBoardTab> {
         xs: 3,
         child: DeviceCard(
           icon: Icons.local_drink,
-          name: "Relay0",
+          name: "Nutrient A",
           path: "relay/0",
           address: deviceAddress,
           port: devicePort,
@@ -144,7 +127,7 @@ class _DashBoardTabState extends State<DashBoardTab> {
         xs: 3,
         child: DeviceCard(
           icon: Icons.local_drink,
-          name: "Relay1",
+          name: "Nutrient B",
           path: "relay/1",
           address: deviceAddress,
           port: devicePort,
@@ -161,7 +144,7 @@ class _DashBoardTabState extends State<DashBoardTab> {
         xs: 3,
         child: DeviceCard(
           icon: Icons.local_drink,
-          name: "Relay2",
+          name: "PH Down",
           path: "relay/2",
           address: deviceAddress,
           port: devicePort,
@@ -178,7 +161,7 @@ class _DashBoardTabState extends State<DashBoardTab> {
         xs: 3,
         child: DeviceCard(
           icon: Icons.local_drink,
-          name: "Relay3",
+          name: "Light",
           path: "relay/3",
           address: deviceAddress,
           port: devicePort,
@@ -187,74 +170,6 @@ class _DashBoardTabState extends State<DashBoardTab> {
           dataList: const ["relay"],
           dataSuffixList: const [""],
           firebaseDBDataName: "relay-3",
-          firebaseDBPath: 'device',
-        )),
-    ResponsiveGridCol(
-        md: 2,
-        sm: 2,
-        xs: 3,
-        child: DeviceCard(
-          icon: Icons.local_drink,
-          name: "Relay4",
-          path: "relay/4",
-          address: deviceAddress,
-          port: devicePort,
-          autoUpdate: autoUpdate,
-          autoUpdateTime: autoUpdateTime,
-          dataList: const ["relay"],
-          dataSuffixList: const [""],
-          firebaseDBDataName: "relay-4",
-          firebaseDBPath: 'device',
-        )),
-    ResponsiveGridCol(
-        md: 2,
-        sm: 2,
-        xs: 3,
-        child: DeviceCard(
-          icon: Icons.local_drink,
-          name: "Relay5",
-          path: "relay/5",
-          address: deviceAddress,
-          port: devicePort,
-          autoUpdate: autoUpdate,
-          autoUpdateTime: autoUpdateTime,
-          dataList: const ["relay"],
-          dataSuffixList: const [""],
-          firebaseDBDataName: "relay-5",
-          firebaseDBPath: 'device',
-        )),
-    ResponsiveGridCol(
-        md: 2,
-        sm: 2,
-        xs: 3,
-        child: DeviceCard(
-          icon: Icons.local_drink,
-          name: "Relay6",
-          path: "relay/6",
-          address: deviceAddress,
-          port: devicePort,
-          autoUpdate: autoUpdate,
-          autoUpdateTime: autoUpdateTime,
-          dataList: const ["relay"],
-          dataSuffixList: const [""],
-          firebaseDBDataName: "relay-6",
-          firebaseDBPath: 'device',
-        )),
-    ResponsiveGridCol(
-        md: 2,
-        sm: 2,
-        xs: 3,
-        child: DeviceCard(
-          icon: Icons.local_drink,
-          name: "Relay7",
-          path: "relay/7",
-          address: deviceAddress,
-          port: devicePort,
-          autoUpdate: autoUpdate,
-          autoUpdateTime: autoUpdateTime,
-          dataList: const ["relay"],
-          dataSuffixList: const [""],
-          firebaseDBDataName: "relay-7",
           firebaseDBPath: 'device',
         )),
     ResponsiveGridCol(
@@ -383,10 +298,12 @@ class _DeviceCardState extends State<DeviceCard> {
     deviceDataRef.child(widget.firebaseDBDataName).onValue.listen((event) {
       dynamic dataValue = event.snapshot.value;
       setState(() {
-        if (dataValue == null) {
-          firebaseData = "??";
-        } else if (dataValue.runtimeType == int && dataValue <= 1) {
-          firebaseData = dataValue == 0 ? "OFF" : "ON";
+        if (dataValue == null || dataValue == -1) {
+          firebaseData = "No Data";
+        } else if (dataValue.runtimeType == bool) {
+          firebaseData = dataValue == true ? "ON" : "OFF";
+        } else if (dataValue.runtimeType == double) {
+          firebaseData = dataValue.toStringAsFixed(2);
         } else {
           firebaseData = dataValue;
         }
@@ -487,7 +404,7 @@ class _DeviceCardState extends State<DeviceCard> {
               Icon(widget.icon, size: 50),
               const SizedBox(height: 10),
               Text(widget.name),
-              Text(firebaseData),
+              Text(firebaseData.toString()),
             ] else ...[
               const SizedBox(height: 30),
               Center(
