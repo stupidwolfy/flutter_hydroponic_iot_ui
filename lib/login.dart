@@ -59,22 +59,28 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Spacer(flex: 10),
-                  ElevatedButton(
-                    onPressed: () => signInWithGoogle(context),
-                    child: const Padding(
-                      padding: EdgeInsets.all(5),
-                      child: FaIcon(
-                        FontAwesomeIcons.google,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                  const Spacer(flex: 1),
-                  const Text("or"),
-                  const Spacer(flex: 1),
-                  TextButton(
-                      onPressed: () => signInLocal(),
-                      child: const Text("Local Mode")),
+                  SizedBox(
+                      height: 60,
+                      child: ElevatedButton(
+                        onPressed: () => signInWithGoogle(context),
+                        child: Row(children: [
+                          Spacer(flex: 10),
+                          FaIcon(
+                            FontAwesomeIcons.google,
+                            size: 30,
+                          ),
+                          Spacer(flex: 5),
+                          Text("Sign in with Google",
+                              style: Theme.of(context).textTheme.headline6),
+                          Spacer(flex: 10)
+                        ]),
+                      )),
+                  // const Spacer(flex: 1),
+                  // const Text("or"),
+                  // const Spacer(flex: 1),
+                  // TextButton(
+                  //     onPressed: () => signInLocal(),
+                  //     child: const Text("Local Mode")),
                   const Spacer(flex: 10),
                 ],
               ),

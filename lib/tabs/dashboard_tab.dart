@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class DashBoardTab extends StatefulWidget {
   const DashBoardTab({Key? key}) : super(key: key);
@@ -188,7 +189,7 @@ class _DashBoardTabState extends State<DashBoardTab> {
           dataList: const [],
           dataSuffixList: const [],
           imagePath: "/cam",
-          firebaseDBPath: 'device',
+          firebaseDBPath: '',
           firebaseDBDataName: "",
         )),
   ];
@@ -291,6 +292,17 @@ class _DeviceCardState extends State<DeviceCard> {
     }
   }
 
+  Future<void> fetchFirebaseStorageFile() async {
+    final imageRef = FirebaseStorage.instance
+        .ref('user/${FirebaseAuth.instance.currentUser?.uid}');
+
+    var url = await imageRef.getDownloadURL();
+
+    setState(() {
+      firebaseData = url;
+    });
+  }
+
   void fetchFirebaseDeviceDB() {
     final DatabaseReference deviceDataRef = FirebaseDatabase.instance.ref(
         'users/${FirebaseAuth.instance.currentUser?.uid}/${widget.firebaseDBPath}');
@@ -318,6 +330,10 @@ class _DeviceCardState extends State<DeviceCard> {
       device = fetchDevice(widget.address, widget.port, widget.path);
     } else {
       fetchFirebaseDeviceDB();
+    }
+
+    if (widget.imagePath != null) {
+      fetchFirebaseStorageFile();
     }
   }
 
@@ -409,7 +425,7 @@ class _DeviceCardState extends State<DeviceCard> {
               const SizedBox(height: 30),
               Center(
                   child: Image.network(
-                "http://${widget.address}:${widget.port}/{widget.imagePath}",
+                firebaseData.toString(),
                 errorBuilder: (BuildContext context, Object exception,
                     StackTrace? stackTrace) {
                   return const Icon(
@@ -417,7 +433,7 @@ class _DeviceCardState extends State<DeviceCard> {
                     size: 50,
                   );
                 },
-                height: 100,
+                height: 200,
               )),
               const SizedBox(height: 10),
               Text(widget.name, style: Theme.of(context).textTheme.headline6),

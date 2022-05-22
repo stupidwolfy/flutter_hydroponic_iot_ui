@@ -130,3 +130,5 @@ coverage/
 /android/app/debug
 /android/app/profile
 /android/app/release
+.firebaserc
+firebase.json
