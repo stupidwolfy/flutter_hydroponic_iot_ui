@@ -85,16 +85,16 @@ class _SettingTabState extends State<SettingTab> {
           SettingsSection(
             title: const Text('Common'),
             tiles: <SettingsTile>[
-              SettingsTile.switchTile(
-                onToggle: _setAutoUpdate,
-                onPressed: (context) {
-                  _setAutoUpdate(autoUpdate!);
-                },
-                initialValue: autoUpdate,
-                leading: const Icon(Icons.update),
-                title: const Text('Auto Update'),
-                description: Text('update every $autoUpdateTime minute'),
-              ),
+              // SettingsTile.switchTile(
+              //   onToggle: _setAutoUpdate,
+              //   onPressed: (context) {
+              //     _setAutoUpdate(autoUpdate!);
+              //   },
+              //   initialValue: autoUpdate,
+              //   leading: const Icon(Icons.update),
+              //   title: const Text('Auto Update'),
+              //   description: Text('update every $autoUpdateTime minute'),
+              // ),
               SettingsTile(
                 title: Text(usingLocal ? "Login" : "Logout"),
                 value: ElevatedButton(
